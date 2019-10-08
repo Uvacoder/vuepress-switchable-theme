@@ -1,5 +1,6 @@
 <template>
   <div
+    :style="themeVariables"
     class="theme-container"
     :class="pageClasses"
     @touchstart="onTouchStart"
@@ -12,49 +13,25 @@
       @toggle-sidebar="toggleSidebar"
     />
 
-    <div
-      class="sidebar-mask"
-      @click="toggleSidebar(false)"
-    ></div>
+    <div class="sidebar-mask" @click="toggleSidebar(false)"></div>
 
-    <Sidebar
-      :items="sidebarItems"
-      @toggle-sidebar="toggleSidebar"
-    >
-      <slot
-        name="sidebar-top"
-        slot="top"
-      />
-      <slot
-        name="sidebar-bottom"
-        slot="bottom"
-      />
+    <Sidebar :items="sidebarItems" @toggle-sidebar="toggleSidebar">
+      <slot name="sidebar-top" slot="top" />
+      <slot name="sidebar-bottom" slot="bottom" />
     </Sidebar>
 
-    <div
-      class="custom-layout"
-      v-if="$page.frontmatter.layout"
-    >
-      <component :is="$page.frontmatter.layout"/>
+    <div class="custom-layout" v-if="$page.frontmatter.layout">
+      <component :is="$page.frontmatter.layout" />
     </div>
 
-    <Home v-else-if="$page.frontmatter.home"/>
+    <Home v-else-if="$page.frontmatter.home" />
 
-    <Page
-      v-else
-      :sidebar-items="sidebarItems"
-    >
-      <slot
-        name="page-top"
-        slot="top"
-      />
-      <slot
-        name="page-bottom"
-        slot="bottom"
-      />
+    <Page v-else :sidebar-items="sidebarItems">
+      <slot name="page-top" slot="top" />
+      <slot name="page-bottom" slot="bottom" />
     </Page>
 
-    <SWUpdatePopup :updateEvent="swUpdateEvent"/>
+    <SWUpdatePopup :updateEvent="swUpdateEvent" />
   </div>
 </template>
 
@@ -80,6 +57,14 @@ export default {
   },
 
   computed: {
+    themeVariables () {
+      if (this.themeDark) {
+        return {
+          '--accent-color': '#6C5297',
+          '--text-color': '#00ff00'
+        }
+      }
+    },
     shouldShowNavbar () {
       const { themeConfig } = this.$site
       console.log(this.$themeLocaleConfig)
